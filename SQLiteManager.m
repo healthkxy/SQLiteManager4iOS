@@ -31,10 +31,11 @@
  * @return the SQLiteManager object initialised.
  */
 
-- (id)initWithDatabaseNamed:(NSString *)name; {
+- (id)initWithDatabaseNamed:(NSString *)name create:(bool)create; {
 	self = [super init];
 	if (self != nil) {
 		databaseName = [[NSString alloc] initWithString:name];
+        bIsCreate = create;
 		db = nil;
 	}
 	return self;	
@@ -45,11 +46,11 @@
  */
 
 - (void)dealloc {
-	[super dealloc];
+	//[super dealloc];
 	if (db != nil) {
 		[self closeDatabase];
 	}
-	[databaseName release];
+	//[databaseName release];
 }
 
 #pragma mark SQLite Operations
@@ -207,7 +208,7 @@
 		} //end for
 		
 		[resultsArray addObject:result];
-		[result release];
+		//[result release];
 
 		
 	} //end while
@@ -362,12 +363,17 @@
  */
 
 - (NSString *)getDatabasePath {
-	
-	// Get the documents directory
-	NSArray *dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString *docsDir = [dirPaths objectAtIndex:0];
-	
-	return [docsDir stringByAppendingPathComponent:databaseName];
+    if (bIsCreate) {
+        // Get the documents directory
+        NSArray *dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *docsDir = [dirPaths objectAtIndex:0];
+        
+        return [docsDir stringByAppendingPathComponent:databaseName];
+    }else{
+        NSString *paths = [[NSBundle mainBundle] resourcePath];
+		NSString *path = [paths stringByAppendingPathComponent:databaseName];
+        return path;
+    }
 }
 
 /**
@@ -384,7 +390,7 @@
 	
 	NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:description, NSLocalizedDescriptionKey, nil];
 	NSError *error = [NSError errorWithDomain:@"SQLite Error" code:code userInfo:userInfo];
-	[userInfo release];
+	//[userInfo release];
 	
 	return error;
 }

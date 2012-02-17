@@ -22,9 +22,10 @@ enum errorCodes {
 
 	sqlite3 *db; // The SQLite db reference
 	NSString *databaseName; // The database name
+    bool bIsCreate;
 }
 
-- (id)initWithDatabaseNamed:(NSString *)name;
+- (id)initWithDatabaseNamed:(NSString *)name create:(bool)create;
 
 // SQLite Operations
 - (NSError *) openDatabase;
